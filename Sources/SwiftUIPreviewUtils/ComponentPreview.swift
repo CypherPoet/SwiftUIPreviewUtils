@@ -4,7 +4,7 @@ import SwiftUI
 #if DEBUG
 
 
-public struct ComponentPreview<Component: View> {
+public struct ComponentPreview<Component> where Component: View {
     public var component: Component
     public var displayName: String?
 }
@@ -12,10 +12,11 @@ public struct ComponentPreview<Component: View> {
 
 // MARK: - View
 extension ComponentPreview: View {
+    
     public var body: some View {
         ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
             ForEach(ContentSizeCategory.smallestAndLargest, id: \.self) { category in
-                self.component
+                component
                     .previewLayout(.sizeThatFits)
                     .preferredColorScheme(colorScheme)
                     .environment(\.sizeCategory, category)
