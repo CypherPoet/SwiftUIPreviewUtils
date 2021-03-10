@@ -5,8 +5,17 @@ import SwiftUI
 
 
 public struct ComponentPreview<Component> where Component: View {
-    public var component: Component
     public var displayName: String?
+    public var component: Component
+
+    
+    public init(
+        displayName: String? = nil,
+        @ViewBuilder content: @escaping () -> Component
+    ) {
+        self.displayName = displayName
+        self.component = content()
+    }
 }
 
 
@@ -34,10 +43,9 @@ extension View {
     public func previewAsComponent(
         displayName: String?
     ) -> some View {
-        ComponentPreview(
-            component: self,
-            displayName: displayName
-        )
+        ComponentPreview(displayName: displayName) {
+            self
+        }
     }
 }
 
@@ -46,8 +54,15 @@ extension View {
 
 
 struct ComponentPreview_Previews: PreviewProvider {
+    
     static var previews: some View {
-        Text("Hello, World!")
-            .previewAsComponent(displayName: "Text View")
+        Group {
+            Text("Hello, World!")
+                .previewAsComponent(displayName: "Text View")
+            
+            ComponentPreview(displayName: "Text View 2") {
+                Text("Swift UI ⚡️")
+            }
+        }
     }
 }
