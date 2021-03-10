@@ -1,7 +1,8 @@
 import XCTest
-@testable import MyLibrary
+@testable import SwiftUIPreviewUtils
 
-final class MyLibraryTests: XCTestCase {
+
+final class SwiftUIPreviewUtilsTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
