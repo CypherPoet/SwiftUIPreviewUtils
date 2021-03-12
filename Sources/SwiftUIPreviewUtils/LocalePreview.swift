@@ -5,16 +5,16 @@ import SwiftUI
 
 
 public struct LocalePreview<TargetView> where TargetView: View {
-    let targetView: TargetView
     public var locales: [Locale]
+    let targetView: TargetView
     
     
     public init(
         locales: [Locale] = Locale.allSupported,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.targetView = content()
         self.locales = locales
+        self.targetView = content()
     }
 }
 
