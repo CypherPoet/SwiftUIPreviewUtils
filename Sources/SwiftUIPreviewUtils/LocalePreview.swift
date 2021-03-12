@@ -10,7 +10,16 @@ public struct LocalePreview<TargetView> where TargetView: View {
     
     
     public init(
-        locales: [Locale] = Locale.allSupported,
+        in locales: [Locale] = Locale.allSupported,
+        @ViewBuilder content: @escaping () -> TargetView
+    ) {
+        self.locales = locales
+        self.targetView = content()
+    }
+    
+    
+    public init(
+        in locales: Locale...,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.locales = locales
@@ -47,7 +56,16 @@ extension View {
     public func previewInLocales(
         _ locales: [Locale] = Locale.allSupported
     ) -> some View {
-        LocalePreview(locales: locales) {
+        LocalePreview(in: locales) {
+            self
+        }
+    }
+    
+    
+    public func previewInLocales(
+        _ locales: Locale...
+    ) -> some View {
+        LocalePreview(in: locales) {
             self
         }
     }
@@ -63,5 +81,18 @@ struct LocalePreview_Previews: PreviewProvider {
         LocalePreview {
             Text("Swift UI ⚡️")
         }
+        
+        LocalePreview(in: Locale.autoupdatingCurrent) {
+            Text("Swift UI ⚡️")
+        }
+        
+        
+        Text("Swift UI ⚡️")
+            .previewInLocales(Locale.allSupported)
+        
+        
+        Text("Swift UI ⚡️")
+            .previewInLocales(.autoupdatingCurrent)
+        
     }
 }

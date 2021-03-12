@@ -10,7 +10,16 @@ public struct ContentSizeCategoryPreview<TargetView> where TargetView: View {
     
     
     public init(
-        sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases,
+        at sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases,
+        @ViewBuilder content: @escaping () -> TargetView
+    ) {
+        self.sizeCategories = sizeCategories
+        self.targetView = content()
+    }
+    
+    
+    public init(
+        at sizeCategories: ContentSizeCategory...,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.sizeCategories = sizeCategories
@@ -39,7 +48,16 @@ extension View {
     public func previewInContentSizeCategories(
         _ sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases
     ) -> some View {
-        ContentSizeCategoryPreview(sizeCategories: sizeCategories) {
+        ContentSizeCategoryPreview(at: sizeCategories) {
+            self
+        }
+    }
+    
+    
+    public func previewInContentSizeCategories(
+        _ sizeCategories: ContentSizeCategory...
+    ) -> some View {
+        ContentSizeCategoryPreview(at: sizeCategories) {
             self
         }
     }
@@ -55,5 +73,13 @@ struct ContentSizeCategoryPreview_Previews: PreviewProvider {
         ContentSizeCategoryPreview {
             Text("Swift UI ⚡️")
         }
+        
+        ContentSizeCategoryPreview(at: .medium) {
+            Text("Swift UI ⚡️")
+        }
+        
+        
+        Text("Swift UI ⚡️")
+            .previewInContentSizeCategories(.medium, .extraSmall)
     }
 }
