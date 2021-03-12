@@ -7,7 +7,14 @@ import SwiftUI
 extension ColorScheme {
 
     public var previewName: String {
-        String(describing: self).capitalized
+        switch self {
+        case .light:
+            return "Light Mode"
+        case .dark:
+            return "Dark Mode"
+        @unknown default:
+            return "\(String(describing: self).capitalized) Mode"
+        }
     }
 }
 
