@@ -5,15 +5,12 @@ import SwiftUI
 
 
 public struct ComponentPreview<Component> where Component: View {
-    public var displayName: String?
     public var component: Component
 
     
     public init(
-        displayName: String? = nil,
         @ViewBuilder content: @escaping () -> Component
     ) {
-        self.displayName = displayName
         self.component = content()
     }
 }
@@ -29,21 +26,35 @@ extension ComponentPreview: View {
                     .previewLayout(.sizeThatFits)
                     .preferredColorScheme(colorScheme)
                     .environment(\.sizeCategory, category)
-                    .previewDisplayName(
-                        displayName ?? "\(colorScheme.previewName) + \(category.previewName)"
-                    )
+                    .previewDisplayName("\(colorScheme.previewName) + \(category.previewName)")
             }
         }
     }
 }
 
 
+// MARK: - ContentSizeCategory + previewName
+private extension ContentSizeCategory {
+
+    var previewName: String {
+        switch self {
+        case Self.smallestAndLargest.first:
+            return "Smallest Content Size asdf"
+        case Self.smallestAndLargest.last:
+            return "Largest Content Size"
+        default:
+            return String(describing: self)
+        }
+    }
+}
+
+
+
+// MARK: - View Modifier
 extension View {
 
-    public func previewAsComponent(
-        displayName: String? = nil
-    ) -> some View {
-        ComponentPreview(displayName: displayName) {
+    public func previewAsComponent() -> some View {
+        ComponentPreview() {
             self
         }
     }
@@ -58,9 +69,9 @@ struct ComponentPreview_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             Text("Hello, World!")
-                .previewAsComponent(displayName: "Text View")
+                .previewAsComponent()
             
-            ComponentPreview(displayName: "Text View 2") {
+            ComponentPreview() {
                 Text("Swift UI ⚡️")
             }
         }
