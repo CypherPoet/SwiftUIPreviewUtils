@@ -5,8 +5,8 @@ import SwiftUI
 
 
 public struct LocalePreview<TargetView> where TargetView: View {
-    public var locales: [Locale]
     let targetView: TargetView
+    public var locales: [Locale]
     
     
     public init(
