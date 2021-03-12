@@ -41,7 +41,7 @@ extension ComponentPreview: View {
 extension View {
 
     public func previewAsComponent(
-        displayName: String?
+        displayName: String? = nil
     ) -> some View {
         ComponentPreview(displayName: displayName) {
             self
