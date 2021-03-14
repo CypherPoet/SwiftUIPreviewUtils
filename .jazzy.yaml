@@ -5,5 +5,4 @@ github_url: https://github.com/CypherPoet/SwiftUIPreviewUtils
 theme: fullwidth
 swift_build_tool: spm
 clean: true
-swift_version: 5.4
 min_acl: internal
