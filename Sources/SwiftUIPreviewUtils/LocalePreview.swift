@@ -32,7 +32,7 @@ public struct LocalePreview<TargetView> where TargetView: View {
 extension LocalePreview: View {
     
     public var body: some View {
-        ForEach(Locale.allSupported, id: \.self) { locale in
+        ForEach(locales, id: \.self) { locale in
             targetView
                 .previewLayout(.sizeThatFits)
                 .environment(\.locale, locale)
