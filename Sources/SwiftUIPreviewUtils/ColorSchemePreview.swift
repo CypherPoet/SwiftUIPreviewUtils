@@ -77,7 +77,6 @@ struct ColorSchemePreview_Previews: PreviewProvider {
             Text("Swift UI ⚡️")
         }
         
-        
         Text("Swift UI ⚡️")
             .previewInColorSchemes()
         
