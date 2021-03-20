@@ -48,7 +48,7 @@ You can add `SwiftUIPreviewUtils` as a package dependency in your `Package.swift
 let package = Package(
     //...
     dependencies: [
-        .package(url: "https://github.com/CypherPoet/SwiftUIPreviewUtils", .exact("0.0.6")),
+        .package(url: "https://github.com/CypherPoet/SwiftUIPreviewUtils", .exact("0.0.7")),
     ],
     //...
 )
