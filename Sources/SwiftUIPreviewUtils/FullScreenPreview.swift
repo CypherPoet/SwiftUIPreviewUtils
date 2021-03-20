@@ -4,36 +4,48 @@ import SwiftUI
 #if DEBUG
 
 
-@available(iOS 13.0, macOS 11.0, tvOS 13.0, watchOS 6.0, *)
 public struct FullScreenPreview<TargetView> where TargetView: View {
-    public var targetView: TargetView
     public var devices: [PreviewDevice]
+    public var isInsideNavigationView: Bool
+    public var navigationTitle: String?
+    public var targetView: TargetView
+    
+    
+    public init(
+        on devices: [PreviewDevice] = [.iPhone12],
+        isInsideNavigationView: Bool = false,
+        navigationTitle: String? = nil,
+        @ViewBuilder content: @escaping () -> TargetView
+    ) {
+        self.devices = devices
+        self.isInsideNavigationView = isInsideNavigationView
+        self.navigationTitle = navigationTitle
+        self.targetView = content()
+    }
+    
+    
+    public init(
+        on devices: PreviewDevice...,
+        isInsideNavigationView: Bool = false,
+        navigationTitle: String? = nil,
+        @ViewBuilder content: @escaping () -> TargetView
+    ) {
+        self.devices = devices
+        self.isInsideNavigationView = isInsideNavigationView
+        self.navigationTitle = navigationTitle
+        self.targetView = content()
+    }
 }
 
 
 extension FullScreenPreview: View {
-    
-    private var bodyContent: some View {
-        ForEach(devices, id: \.self.rawValue) { device in
-            ForEach(ColorScheme.allCases, id: \.self) { scheme in
-                NavigationView {
-                    targetView
-                        .navigationTitle("")
-                }
-                .previewDevice(device)
-                .colorScheme(scheme)
-                .previewDisplayName("\(scheme.previewName): \(device.rawValue)")
-            }
-        }
-    }
-    
     
     public var body: some View {
         #if os(iOS)
         
         return bodyContent
             .navigationViewStyle(StackNavigationViewStyle())
-
+        
         #else
         
         return bodyContent
@@ -44,17 +56,49 @@ extension FullScreenPreview: View {
 }
 
 
+// MARK: - View Content Builders
+extension FullScreenPreview {
+    
+    private var bodyContent: some View {
+        ForEach(devices, id: \.self.rawValue) { device in
+            ForEach(ColorScheme.allCases, id: \.self) { scheme in
+                Group {
+                    if isInsideNavigationView {
+                        NavigationView {
+                            targetView
+                        }
+                    } else {
+                        targetView
+                    }
+                }
+                .navigationTitle(navigationTitle ?? "\(scheme.previewName): \(device.rawValue)")
+                .previewDevice(device)
+                .colorScheme(scheme)
+                .previewDisplayName("\(scheme.previewName): \(device.rawValue)")
+            }
+        }
+    }
+}
+
+
+// MARK: - View Extensions
 extension View {
     
-    @available(iOS 13.0, macOS 11.0, tvOS 13.0, watchOS 6.0, *)
     public func previewAsScreen(
-        on devices: PreviewDevice...
+        on devices: PreviewDevice...,
+        isInsideNavigationView: Bool = false,
+        navigationTitle: String? = nil
     ) -> some View {
-        FullScreenPreview(targetView: self, devices: devices)
+        FullScreenPreview(
+            on: devices,
+            isInsideNavigationView: isInsideNavigationView,
+            navigationTitle: navigationTitle
+        ) {
+            self
+        }
     }
     
     
-    @available(iOS 13.0, macOS 11.0, tvOS 13.0, watchOS 6.0, *)
     public func previewAsScreen(
         on devices: [PreviewDevice] = [
             .iPhoneSE2,
@@ -63,9 +107,17 @@ extension View {
             .iPhone12Mini,
             .iPadPro12Point9Inch,
             .watchSeriesSix40mm,
-        ]
+        ],
+        isInsideNavigationView: Bool = false,
+        navigationTitle: String? = nil
     ) -> some View {
-        FullScreenPreview(targetView: self, devices: devices)
+        FullScreenPreview(
+            on: devices,
+            isInsideNavigationView: isInsideNavigationView,
+            navigationTitle: navigationTitle
+        ) {
+            self
+        }
     }
 }
 
@@ -76,6 +128,20 @@ extension View {
 struct FullScreenPreview_Previews: PreviewProvider {
     static var previews: some View {
         Text("Hello, World!")
-            .previewAsScreen(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm)
+            .previewAsScreen(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm,  isInsideNavigationView: true)
+        
+//
+//        FullScreenPreview {
+//            Text("Swift UI ⚡️")
+//        }
+//
+//        FullScreenPreview(isInsideNavigationView: true) {
+//            Text("Swift UI ⚡️")
+//        }
+//
+//        FullScreenPreview(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm) {
+//            Text("Swift UI ⚡️")
+//        }
+        
     }
 }
