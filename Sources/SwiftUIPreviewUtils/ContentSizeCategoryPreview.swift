@@ -6,24 +6,33 @@ import SwiftUI
 
 public struct ContentSizeCategoryPreview<TargetView> where TargetView: View {
     let targetView: TargetView
+
     public var sizeCategories: [ContentSizeCategory]
-    
-    
+    public var previewLayout: PreviewLayout
+
+
+    // MARK: - Init
     public init(
         at sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.sizeCategories = sizeCategories
+        self.previewLayout = previewLayout
         self.targetView = content()
     }
     
     
     public init(
         at sizeCategories: ContentSizeCategory...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.sizeCategories = sizeCategories
-        self.targetView = content()
+        self.init(
+            at: sizeCategories,
+            withLayout: previewLayout,
+            content: content
+        )
     }
 }
 
@@ -34,7 +43,7 @@ extension ContentSizeCategoryPreview: View {
     public var body: some View {
         ForEach(sizeCategories, id: \.self) { sizeCategory in
             targetView
-                .previewLayout(.sizeThatFits)
+                .previewLayout(previewLayout)
                 .environment(\.sizeCategory, sizeCategory)
                 .previewDisplayName("Size Category: \(sizeCategory)")
         }
@@ -46,7 +55,8 @@ extension ContentSizeCategoryPreview: View {
 extension View {
 
     public func previewInContentSizeCategories(
-        _ sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases
+        _ sizeCategories: [ContentSizeCategory] = ContentSizeCategory.allCases,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
         ContentSizeCategoryPreview(at: sizeCategories) {
             self
@@ -55,11 +65,13 @@ extension View {
     
     
     public func previewInContentSizeCategories(
-        _ sizeCategories: ContentSizeCategory...
+        _ sizeCategories: ContentSizeCategory...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        ContentSizeCategoryPreview(at: sizeCategories) {
-            self
-        }
+        previewInContentSizeCategories(
+            sizeCategories,
+            withLayout: previewLayout
+        )
     }
 }
 

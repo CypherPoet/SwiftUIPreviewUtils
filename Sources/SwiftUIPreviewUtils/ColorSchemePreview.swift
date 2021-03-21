@@ -6,24 +6,33 @@ import SwiftUI
 
 public struct ColorSchemePreview<TargetView> where TargetView: View {
     let targetView: TargetView
+    
     public var colorSchemes: [ColorScheme]
+    public var previewLayout: PreviewLayout
     
     
+    // MARK: - Init
     public init(
         in colorSchemes: [ColorScheme] = ColorScheme.allCases,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.colorSchemes = colorSchemes
+        self.previewLayout = previewLayout
         self.targetView = content()
     }
     
     
     public init(
         in colorSchemes: ColorScheme...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.colorSchemes = colorSchemes
-        self.targetView = content()
+        self.init(
+            in: colorSchemes,
+            withLayout: previewLayout,
+            content: content
+        )
     }
 }
 
@@ -34,7 +43,7 @@ extension ColorSchemePreview: View {
     public var body: some View {
         ForEach(colorSchemes, id: \.self) { colorScheme in
             targetView
-                .previewLayout(.sizeThatFits)
+                .previewLayout(previewLayout)
                 .preferredColorScheme(colorScheme)
                 .previewDisplayName("Color Scheme: \(colorScheme)")
         }
@@ -45,20 +54,20 @@ extension ColorSchemePreview: View {
 extension View {
 
     public func previewInColorSchemes(
-        _ colorSchemes: [ColorScheme] = ColorScheme.allCases
+        _ colorSchemes: [ColorScheme] = ColorScheme.allCases,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        ColorSchemePreview(in: colorSchemes) {
+        ColorSchemePreview(in: colorSchemes, withLayout: previewLayout) {
             self
         }
     }
     
     
     public func previewInColorSchemes(
-        _ colorSchemes: ColorScheme...
+        _ colorSchemes: ColorScheme...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        ColorSchemePreview(in: colorSchemes) {
-            self
-        }
+        previewInColorSchemes(colorSchemes, withLayout: previewLayout)
     }
 }
 
@@ -74,6 +83,10 @@ struct ColorSchemePreview_Previews: PreviewProvider {
         }
         
         ColorSchemePreview(in: .dark) {
+            Text("Swift UI ⚡️")
+        }
+        
+        ColorSchemePreview(in: .dark, withLayout: .device) {
             Text("Swift UI ⚡️")
         }
         

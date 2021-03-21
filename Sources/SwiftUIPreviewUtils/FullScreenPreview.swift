@@ -11,6 +11,7 @@ public struct FullScreenPreview<TargetView> where TargetView: View {
     public var targetView: TargetView
     
     
+    // MARK: - Init
     public init(
         on devices: [PreviewDevice] = [.iPhone12],
         isInsideNavigationView: Bool = false,
@@ -30,10 +31,12 @@ public struct FullScreenPreview<TargetView> where TargetView: View {
         navigationTitle: String? = nil,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.devices = devices
-        self.isInsideNavigationView = isInsideNavigationView
-        self.navigationTitle = navigationTitle
-        self.targetView = content()
+        self.init(
+            on: devices,
+            isInsideNavigationView: isInsideNavigationView,
+            navigationTitle: navigationTitle,
+            content: content
+        )
     }
 }
 
@@ -85,21 +88,6 @@ extension FullScreenPreview {
 extension View {
     
     public func previewAsScreen(
-        on devices: PreviewDevice...,
-        isInsideNavigationView: Bool = false,
-        navigationTitle: String? = nil
-    ) -> some View {
-        FullScreenPreview(
-            on: devices,
-            isInsideNavigationView: isInsideNavigationView,
-            navigationTitle: navigationTitle
-        ) {
-            self
-        }
-    }
-    
-    
-    public func previewAsScreen(
         on devices: [PreviewDevice] = [
             .iPhoneSE2,
             .iPhone12,
@@ -119,6 +107,20 @@ extension View {
             self
         }
     }
+    
+    
+    public func previewAsScreen(
+        on devices: PreviewDevice...,
+        isInsideNavigationView: Bool = false,
+        navigationTitle: String? = nil
+    ) -> some View {
+        previewAsScreen(
+            on: devices,
+            isInsideNavigationView: isInsideNavigationView,
+            navigationTitle: navigationTitle
+        )
+    }
+    
 }
 
 #endif
@@ -130,18 +132,18 @@ struct FullScreenPreview_Previews: PreviewProvider {
         Text("Hello, World!")
             .previewAsScreen(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm,  isInsideNavigationView: true)
         
-//
-//        FullScreenPreview {
-//            Text("Swift UI ⚡️")
-//        }
-//
-//        FullScreenPreview(isInsideNavigationView: true) {
-//            Text("Swift UI ⚡️")
-//        }
-//
-//        FullScreenPreview(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm) {
-//            Text("Swift UI ⚡️")
-//        }
+        //
+        //        FullScreenPreview {
+        //            Text("Swift UI ⚡️")
+        //        }
+        //
+        //        FullScreenPreview(isInsideNavigationView: true) {
+        //            Text("Swift UI ⚡️")
+        //        }
+        //
+        //        FullScreenPreview(on: .iPadPro11Inch, .iPhone8, .watchSeriesSix40mm) {
+        //            Text("Swift UI ⚡️")
+        //        }
         
     }
 }

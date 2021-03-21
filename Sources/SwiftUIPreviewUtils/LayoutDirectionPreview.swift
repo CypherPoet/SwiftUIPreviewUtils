@@ -6,24 +6,33 @@ import SwiftUI
 
 public struct LayoutDirectionPreview<TargetView> where TargetView: View {
     let targetView: TargetView
+    
     public var layoutDirections: [LayoutDirection]
+    public var previewLayout: PreviewLayout
+
     
-    
+    // MARK: - Init
     public init(
         in directions: [LayoutDirection] = LayoutDirection.allCases,
+        withPreviewLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.layoutDirections = directions
+        self.previewLayout = previewLayout
         self.targetView = content()
     }
     
     
     public init(
         in directions: LayoutDirection...,
+        withPreviewLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.layoutDirections = directions
-        self.targetView = content()
+        self.init(
+            in: directions,
+            withPreviewLayout: previewLayout,
+            content: content
+        )
     }
 }
 
@@ -34,7 +43,7 @@ extension LayoutDirectionPreview: View {
     public var body: some View {
         ForEach(layoutDirections, id: \.self) { layoutDirection in
             targetView
-                .previewLayout(.sizeThatFits)
+                .previewLayout(previewLayout)
                 .environment(\.layoutDirection, layoutDirection)
                 .previewDisplayName("Layout Direction: \(layoutDirection)")
         }
@@ -45,20 +54,26 @@ extension LayoutDirectionPreview: View {
 extension View {
 
     public func previewInLayoutDirections(
-        _ layoutDirections: [LayoutDirection] = LayoutDirection.allCases
+        _ layoutDirections: [LayoutDirection] = LayoutDirection.allCases,
+        withPreviewLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        LayoutDirectionPreview(in: layoutDirections) {
+        LayoutDirectionPreview(
+            in: layoutDirections,
+            withPreviewLayout: previewLayout
+        ) {
             self
         }
     }
     
     
     public func previewInLayoutDirections(
-        _ layoutDirections: LayoutDirection...
+        _ layoutDirections: LayoutDirection...,
+        withPreviewLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        LayoutDirectionPreview(in: layoutDirections) {
-            self
-        }
+        previewInLayoutDirections(
+            layoutDirections,
+            withPreviewLayout: previewLayout
+        )
     }
 }
 

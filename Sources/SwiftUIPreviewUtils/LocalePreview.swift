@@ -6,24 +6,33 @@ import SwiftUI
 
 public struct LocalePreview<TargetView> where TargetView: View {
     let targetView: TargetView
+    
     public var locales: [Locale]
+    public var previewLayout: PreviewLayout
+
     
-    
+    // MARK: - Init
     public init(
         in locales: [Locale] = Locale.allSupported,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
         self.locales = locales
+        self.previewLayout = previewLayout
         self.targetView = content()
     }
     
     
     public init(
         in locales: Locale...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits,
         @ViewBuilder content: @escaping () -> TargetView
     ) {
-        self.locales = locales
-        self.targetView = content()
+        self.init(
+            in: locales,
+            withLayout: previewLayout,
+            content: content
+        )
     }
 }
 
@@ -34,7 +43,7 @@ extension LocalePreview: View {
     public var body: some View {
         ForEach(locales, id: \.self) { locale in
             targetView
-                .previewLayout(.sizeThatFits)
+                .previewLayout(previewLayout)
                 .environment(\.locale, locale)
                 .previewDisplayName("Locale: \(locale.identifier)")
         }
@@ -54,20 +63,20 @@ extension Locale {
 extension View {
 
     public func previewInLocales(
-        _ locales: [Locale] = Locale.allSupported
+        _ locales: [Locale] = Locale.allSupported,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        LocalePreview(in: locales) {
+        LocalePreview(in: locales, withLayout: previewLayout) {
             self
         }
     }
     
     
     public func previewInLocales(
-        _ locales: Locale...
+        _ locales: Locale...,
+        withLayout previewLayout: PreviewLayout = .sizeThatFits
     ) -> some View {
-        LocalePreview(in: locales) {
-            self
-        }
+        previewInLocales(locales, withLayout: previewLayout)
     }
 }
 
