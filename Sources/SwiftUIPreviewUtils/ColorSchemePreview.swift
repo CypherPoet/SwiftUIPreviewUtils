@@ -90,8 +90,6 @@ struct ColorSchemePreview_Previews: PreviewProvider {
             Text("Swift UI ⚡️")
         }
         
-        Text("Swift UI ⚡️")
-            .previewInColorSchemes()
         
         Text("Swift UI ⚡️")
             .previewInColorSchemes(.dark, .light)
@@ -99,5 +97,9 @@ struct ColorSchemePreview_Previews: PreviewProvider {
         Text("Swift UI ⚡️")
             .previewInColorSchemes([.dark, .light])
         
+        
+        Text("Swift UI ⚡️")
+            .openedFromNavigationLink(startsActive: true)
+            .previewInColorSchemes(withLayout: .device)
     }
 }
