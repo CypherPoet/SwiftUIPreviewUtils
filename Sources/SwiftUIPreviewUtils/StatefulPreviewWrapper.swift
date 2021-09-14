@@ -20,7 +20,7 @@ public struct StatefulWrapper<
 
     
     // MARK: - Init
-    init(
+    public init(
         _ value: StateValue,
         content: @escaping (Binding<StateValue>) -> Content
     ) {
