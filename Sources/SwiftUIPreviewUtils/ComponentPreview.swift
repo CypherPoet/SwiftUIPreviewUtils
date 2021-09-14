@@ -1,28 +1,27 @@
 import SwiftUI
 
 
-#if DEBUG
+public struct ComponentPreview<Component: View> {
+
+    @ViewBuilder
+    public var component: () -> Component
 
 
-public struct ComponentPreview<Component> where Component: View {
-    public var component: Component
-
-    
     public init(
-        @ViewBuilder content: @escaping () -> Component
+        component: @escaping () -> Component
     ) {
-        self.component = content()
+        self.component = component
     }
 }
 
 
 // MARK: - View
 extension ComponentPreview: View {
-    
+
     public var body: some View {
         ForEach(ColorScheme.allCases, id: \.self) { colorScheme in
             ForEach(ContentSizeCategory.smallestAndLargest, id: \.self) { category in
-                component
+                component()
                     .previewLayout(.sizeThatFits)
                     .preferredColorScheme(colorScheme)
                     .environment(\.sizeCategory, category)
@@ -39,7 +38,7 @@ private extension ContentSizeCategory {
     var previewName: String {
         switch self {
         case Self.smallestAndLargest.first:
-            return "Smallest Content Size asdf"
+            return "Smallest Content Size"
         case Self.smallestAndLargest.last:
             return "Largest Content Size"
         default:
@@ -54,26 +53,29 @@ private extension ContentSizeCategory {
 extension View {
 
     public func previewAsComponent() -> some View {
-        ComponentPreview() {
+        ComponentPreview {
             self
         }
     }
 }
 
-#endif
 
 
+#if DEBUG
 
 struct ComponentPreview_Previews: PreviewProvider {
-    
+
     static var previews: some View {
         Group {
             Text("Hello, World!")
                 .previewAsComponent()
-            
-            ComponentPreview() {
+
+            ComponentPreview {
                 Text("Swift UI ⚡️")
             }
         }
     }
 }
+
+
+#endif
